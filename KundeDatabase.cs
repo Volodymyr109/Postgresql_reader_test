@@ -24,5 +24,8 @@ public class Kunde : KundeModel
             kunde.KundenId = Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
-
+    public static void WriteToTable(Kunde kunde, NpgsqlConnection conn)
+    {
+        Insert(kunde, conn);
+    }
 }

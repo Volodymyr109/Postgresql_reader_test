@@ -10,7 +10,6 @@ class Program
 
         await using var conn = new NpgsqlConnection(connString);
         await conn.OpenAsync();
-
         // read data from the "kunden" table
         await using (var kundenCmd = new NpgsqlCommand("SELECT * FROM kunde", conn))
         await using (var kundenReader = await kundenCmd.ExecuteReaderAsync())
@@ -21,7 +20,6 @@ class Program
                 Console.WriteLine($"{kundenReader["kundenid"]}, {kundenReader["kundennr"]}, {kundenReader["name"]}, {kundenReader["strasse"]}, {kundenReader["ort"]}");
             }
         }
-
         // read data from the "artikel" table
         await using (var artikelCmd = new NpgsqlCommand("SELECT * FROM artikel", conn))
         await using (var artikelReader = await artikelCmd.ExecuteReaderAsync())
@@ -32,7 +30,6 @@ class Program
                 Console.WriteLine($"{artikelReader["artikelid"]}, {artikelReader["artikelnr"]}, {artikelReader["name"]}, {artikelReader["preis"]}");
             }
         }
-
         // read data from the "rechnung" table
         await using (var rechnungCmd = new NpgsqlCommand("SELECT * FROM rechnung", conn))
         await using (var rechnungReader = await rechnungCmd.ExecuteReaderAsync())
@@ -41,6 +38,27 @@ class Program
             while (await rechnungReader.ReadAsync())
             {
                 Console.WriteLine($"{rechnungReader["rechnungid"]}, {rechnungReader["kundenid"]}, {rechnungReader["artikelid"]}, {rechnungReader["anzahl"]}");
+            }
+        }
+        GesamtbetragProKunde(conn);
+    }
+    public static void GesamtbetragProKunde(NpgsqlConnection conn)
+    {
+        using (var cmd = new NpgsqlCommand("SELECT k.kundenid, k.name AS kundenname, SUM(r.anzahl * a.preis) AS gesamtbetrag " +
+                                          "FROM kunde k " +
+                                          "JOIN rechnung r ON k.kundenid = r.kundenid " +
+                                          "JOIN artikel a ON r.artikelid = a.artikelid " +
+                                          "GROUP BY k.kundenid, k.name", conn))
+        using (var reader = cmd.ExecuteReader())
+        {
+            Console.WriteLine("Gesamtbetrag pro Kunde:");
+            while (reader.Read())
+            {
+                int kundenId = reader.GetInt32(0);
+                string kundenname = reader.GetString(1);
+                double gesamtbetrag = reader.GetDouble(2);
+
+                Console.WriteLine($"Kunde: {kundenname}, Gesamtbetrag: {gesamtbetrag:C}");
             }
         }
     }

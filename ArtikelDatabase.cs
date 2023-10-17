@@ -21,4 +21,8 @@ public class Artikel : ArtikelModel
             artikel.ArtikelId = Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
+    public static void WriteToTable(Artikel artikel, NpgsqlConnection conn)
+    {
+        Insert(artikel, conn);
+    }
 }

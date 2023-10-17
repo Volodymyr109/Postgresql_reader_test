@@ -21,4 +21,8 @@ public class Rechnung : RechnungModel
             rechnung.RechnungId = Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
+    public static void WriteToTable(Rechnung rechnung, NpgsqlConnection conn)
+    {
+        Insert(rechnung, conn);
+    }    
 }
