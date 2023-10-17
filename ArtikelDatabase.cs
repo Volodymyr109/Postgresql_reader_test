@@ -12,36 +12,13 @@ public class Artikel : ArtikelModel
 {
     public static void Insert(Artikel artikel, NpgsqlConnection conn)
     {
-        using (var cmd = new NpgsqlCommand("INSERT INTO artikel (ArtikelNr, Name, Preis) VALUES (@ArtikelNr, @Name, @Preis) RETURNING ArtikelId", conn))
+        using (var cmd = new NpgsqlCommand("INSERT INTO artikel (artikelnr, name, preis) VALUES (@artikelnr, @name, @preis) RETURNING artikelid", conn))
         {
-            cmd.Parameters.AddWithValue("ArtikelNr", artikel.ArtikelNr);
-            cmd.Parameters.AddWithValue("Name", artikel.Name);
-            cmd.Parameters.AddWithValue("Preis", artikel.Preis);
+            cmd.Parameters.AddWithValue("artikelnr", artikel.ArtikelNr);
+            cmd.Parameters.AddWithValue("name", artikel.Name);
+            cmd.Parameters.AddWithValue("preis", artikel.Preis);
 
             artikel.ArtikelId = Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
-    // public static void WriteToCSV(List<Artikel> artikelList, string filePath)
-    // {
-    //     try
-    //     {
-    //         using (StreamWriter sw = new StreamWriter(filePath, false))
-    //         {
-    //             // Schreibe die Header-Zeile in die CSV-Datei
-    //             sw.WriteLine("ArtikelId,ArtikelNr,Name,Preis");
-
-    //             foreach (var artikel in artikelList)
-    //             {
-    //                 // Schreibe die Daten jeder Zeile in die CSV-Datei
-    //                 sw.WriteLine($"{artikel.ArtikelId},{artikel.ArtikelNr},{artikel.Name},{artikel.Preis}");
-    //             }
-
-    //             Console.WriteLine("Daten in die Datei geschrieben: " + filePath);
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine("Fehler beim Schreiben der Datei: " + ex.Message);
-    //     }
-    // }
 }

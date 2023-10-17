@@ -12,40 +12,17 @@ public class KundeModel
 }
 public class Kunde : KundeModel
 {
-
     public static void Insert(Kunde kunde, NpgsqlConnection conn)
     {
-        using (var cmd = new NpgsqlCommand("INSERT INTO kunde (KundenNr, Name, Strasse, Ort) VALUES (@KundenNr, @Name, @Strasse, @Ort) RETURNING KundenId", conn))
+        using (var cmd = new NpgsqlCommand("INSERT INTO kunde (kundennr, name, strasse, ort) VALUES (@kundennr, @name, @strasse, @ort) RETURNING kundenid", conn))
         {
-            cmd.Parameters.AddWithValue("KundenNr", kunde.KundenNr);
-            cmd.Parameters.AddWithValue("Name", kunde.Name);
-            cmd.Parameters.AddWithValue("Strasse", kunde.Strasse);
-            cmd.Parameters.AddWithValue("Ort", kunde.Ort);
+            cmd.Parameters.AddWithValue("kundennr", kunde.KundenNr);
+            cmd.Parameters.AddWithValue("name", kunde.Name);
+            cmd.Parameters.AddWithValue("strasse", kunde.Strasse);
+            cmd.Parameters.AddWithValue("ort", kunde.Ort);
 
             kunde.KundenId = Convert.ToInt32(cmd.ExecuteScalar());
         }
     }
-    // public static void WriteToCSV(List<Kunde> kundeList, string filePath)
-    // {
-    //     try
-    //     {
-    //         using (StreamWriter sw = new StreamWriter(filePath, false))
-    //         {
-    //             // Schreibe die Header-Zeile in die CSV-Datei
-    //             sw.WriteLine("KundenId,KundenNr,Name,Strasse,Ort");
 
-    //             foreach (var kunde in kundeList)
-    //             {
-    //                 // Schreibe die Daten jeder Zeile in die CSV-Datei
-    //                 sw.WriteLine($"{kunde.KundenId},{kunde.KundenNr},{kunde.Name},{kunde.Strasse},{kunde.Ort}");
-    //             }
-
-    //             Console.WriteLine("Daten in die Datei geschrieben: " + filePath);
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine("Fehler beim Schreiben der Datei: " + ex.Message);
-    //     }
-    // }
 }
