@@ -14,6 +14,7 @@ class Program
         await using (var kundenCmd = new NpgsqlCommand("SELECT * FROM kunde", conn))
         await using (var kundenReader = await kundenCmd.ExecuteReaderAsync())
         {
+            Console.WriteLine("-----------------Kunden----------------");
             Console.WriteLine("Kunde:");
             while (await kundenReader.ReadAsync())
             {
@@ -24,6 +25,7 @@ class Program
         await using (var artikelCmd = new NpgsqlCommand("SELECT * FROM artikel", conn))
         await using (var artikelReader = await artikelCmd.ExecuteReaderAsync())
         {
+            Console.WriteLine("-----------------Artikel----------------");
             Console.WriteLine("Artikel:");
             while (await artikelReader.ReadAsync())
             {
@@ -34,6 +36,7 @@ class Program
         await using (var rechnungCmd = new NpgsqlCommand("SELECT * FROM rechnung", conn))
         await using (var rechnungReader = await rechnungCmd.ExecuteReaderAsync())
         {
+            Console.WriteLine("-----------------Rechnung----------------");            
             Console.WriteLine("Rechnung:");
             while (await rechnungReader.ReadAsync())
             {
@@ -51,6 +54,7 @@ class Program
                                           "GROUP BY k.kundenid, k.name", conn))
         using (var reader = cmd.ExecuteReader())
         {
+            Console.WriteLine("---------------Gesamtbetrag--------------");            
             Console.WriteLine("Gesamtbetrag pro Kunde:");
             while (reader.Read())
             {
