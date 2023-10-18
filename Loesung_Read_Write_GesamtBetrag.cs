@@ -8,7 +8,6 @@ public class ArtikelModel
     public string Name { get; set; }
     public double Preis { get; set; }
 }
-
 public class RechnungModel
 {
     public int RechnungId { get; set; }
@@ -16,7 +15,6 @@ public class RechnungModel
     public int ArtikelId { get; set; }
     public int Anzahl { get; set; }
 }
-
 public class KundeModel
 {
     public int KundenId { get; set; }
@@ -25,7 +23,6 @@ public class KundeModel
     public string Strasse { get; set; }
     public string Ort { get; set; }
 }
-
 class Program
 {
     static void Main()
@@ -129,63 +126,63 @@ class Program
             conn.Close();
         }
     }
-static void insertRechnung(string connString, RechnungModel rechnung)
-{
-    using (NpgsqlConnection conn = new NpgsqlConnection(connString))
-    {
-        conn.Open();
-
-        using (var cmd = new NpgsqlCommand("INSERT INTO rechnung (kundenid, artikelid, anzahl) VALUES (@kundenid, @artikelid, @anzahl) RETURNING rechnungid", conn))
+    static void insertRechnung(string connString, RechnungModel rechnung)
+    {   
+        using (NpgsqlConnection conn = new NpgsqlConnection(connString))
         {
-            cmd.Parameters.AddWithValue("kundenid", rechnung.KundenId);
-            cmd.Parameters.AddWithValue("artikelid", rechnung.ArtikelId);
-            cmd.Parameters.AddWithValue("anzahl", rechnung.Anzahl);
+            conn.Open();
 
-            rechnung.RechnungId = Convert.ToInt32(cmd.ExecuteScalar());
+            using (var cmd = new NpgsqlCommand("INSERT INTO rechnung (kundenid, artikelid, anzahl) VALUES (@kundenid, @artikelid, @anzahl) RETURNING rechnungid", conn))
+            {
+                cmd.Parameters.AddWithValue("kundenid", rechnung.KundenId);
+                cmd.Parameters.AddWithValue("artikelid", rechnung.ArtikelId);
+                cmd.Parameters.AddWithValue("anzahl", rechnung.Anzahl);
+
+                rechnung.RechnungId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            conn.Close();
         }
-
-        conn.Close();
     }
-}
 
-static void insertArtikel(string connString, ArtikelModel artikel)
-{
-    using (NpgsqlConnection conn = new NpgsqlConnection(connString))
+    static void insertArtikel(string connString, ArtikelModel artikel)
     {
-        conn.Open();
-
-        using (var cmd = new NpgsqlCommand("INSERT INTO artikel (artikelnr, name, preis) VALUES (@artikelnr, @name, @preis) RETURNING artikelid", conn))
+        using (NpgsqlConnection conn = new NpgsqlConnection(connString))
         {
-            cmd.Parameters.AddWithValue("artikelnr", artikel.ArtikelNr);
-            cmd.Parameters.AddWithValue("name", artikel.Name);
-            cmd.Parameters.AddWithValue("preis", artikel.Preis);
+            conn.Open();
 
-            artikel.ArtikelId = Convert.ToInt32(cmd.ExecuteScalar());
+            using (var cmd = new NpgsqlCommand("INSERT INTO artikel (artikelnr, name, preis) VALUES (@artikelnr, @name, @preis) RETURNING artikelid", conn))
+            {
+                cmd.Parameters.AddWithValue("artikelnr", artikel.ArtikelNr);
+                cmd.Parameters.AddWithValue("name", artikel.Name);
+                cmd.Parameters.AddWithValue("preis", artikel.Preis);
+
+                artikel.ArtikelId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            conn.Close();
         }
-
-        conn.Close();
     }
-}
 
-static void insertKunde(string connString, KundeModel kunde)
-{
-    using (NpgsqlConnection conn = new NpgsqlConnection(connString))
+    static void insertKunde(string connString, KundeModel kunde)
     {
-        conn.Open();
-
-        using (var cmd = new NpgsqlCommand("INSERT INTO kunde (kundenNr, name, strasse, ort) VALUES (@kundenNr, @name, @strasse, @ort) RETURNING kundenId", conn))
+        using (NpgsqlConnection conn = new NpgsqlConnection(connString))
         {
-            cmd.Parameters.AddWithValue("kundenNr", kunde.KundenNr);
-            cmd.Parameters.AddWithValue("name", kunde.Name);
-            cmd.Parameters.AddWithValue("strasse", kunde.Strasse);
-            cmd.Parameters.AddWithValue("ort", kunde.Ort);
+            conn.Open();
 
-            kunde.KundenId = Convert.ToInt32(cmd.ExecuteScalar());
+            using (var cmd = new NpgsqlCommand("INSERT INTO kunde (kundenNr, name, strasse, ort) VALUES (@kundenNr, @name, @strasse, @ort) RETURNING kundenId", conn))
+            {
+                cmd.Parameters.AddWithValue("kundenNr", kunde.KundenNr);
+                cmd.Parameters.AddWithValue("name", kunde.Name);
+                cmd.Parameters.AddWithValue("strasse", kunde.Strasse);
+                cmd.Parameters.AddWithValue("ort", kunde.Ort);
+
+                kunde.KundenId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            conn.Close();
         }
-
-        conn.Close();
     }
-}
     public static void GesamtbetragProKunde(NpgsqlConnection conn)
     {
         using (var cmd = new NpgsqlCommand("SELECT k.kundenid, k.name AS kundenname, SUM(r.anzahl * a.preis) AS gesamtbetrag " +
